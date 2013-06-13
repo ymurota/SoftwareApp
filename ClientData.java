@@ -2,13 +2,10 @@ import java.io.*;
 import java.lang.reflect.*;
 
 class ClientData{
-	private static final ClientData instance = new ClientData();
-	private ClientData(){}
 	int selected;
 	double time;
 
-	public static ClientData getInstance() {
-		return ClientData.instance;
+	ClientData() {
 	}
 	
 	public void set(int selected, double time) {

@@ -2,17 +2,14 @@ import java.io.*;
 import java.lang.reflect.*;
 
 class ServerData{
-	private static final ServerData instance = new ServerData();
-	private ServerData(){}
 	String question;
 	String selections[] = new String[4];
 	String status;
 	int HP;
 
-	public static ServerData getInstance() {
-		return ServerData.instance;
+	ServerData() {
 	}
-	
+
 	public void set(String question, String selections[], String status, int HP) {
 		this.question = question;
 		this.selections = selections.clone();
