@@ -34,9 +34,17 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	private JButton confirmButton;
 	private DecimalFormat df = new DecimalFormat("0.0");
 	private String Question;
-	private String[] Selection;
+	private String[] Selection;	
+	private double remain;
 	
-	public double remain;
+	private int MAX=10;
+	private int LINE_MAX=10;
+	private char[][] qSentence = new char[LINE_MAX][MAX];
+	private QuestionTask questionTask; 
+	private Timer questionTimer;
+	private int qSentencePos = 0;
+	private int lineCount= 0;
+	
 	public int STATE;
 	public int QSTATE=0,ASTATE=1,FIRST=-1;
 	
@@ -68,13 +76,13 @@ public class AnswerPanel extends JPanel implements ActionListener{
 		
 		readyTime = new JLabel("開始まで:"+ready);
 		readyTime.setForeground(Color.WHITE);
-		readyTime.setBounds(WIDTH/8,250,150,80);
+		readyTime.setBounds(WIDTH/8,HEIGHT/2-50,150,80);
 		readyTime.setVisible(false);
 		add(readyTime);
 		
 		remainTime = new JLabel("残り時間:"+remain);
 		remainTime.setForeground(Color.WHITE);
-		remainTime.setBounds(WIDTH/8,250,150,80);
+		remainTime.setBounds(WIDTH/8,HEIGHT/2-50,150,80);
 		remainTime.setVisible(false);
 		add(remainTime);
 		
@@ -108,7 +116,9 @@ public class AnswerPanel extends JPanel implements ActionListener{
 		remain=10.0;
 		Question = question;
 		if(STATE==QSTATE){
-			
+			qSentencePos=0;
+			lineCount=0;
+			questionTimer = new Timer();
 			readyTimer = new Timer();
 			readyTask = new ReadyTask();
 			readyTime.setVisible(true);
@@ -118,8 +128,10 @@ public class AnswerPanel extends JPanel implements ActionListener{
 		}else if(STATE==ASTATE){
 			confirmButton.setEnabled(true);
 			for(int i =0;i<4;i++){
+				ansButton[i].setText(Selection[i]);
 				ansButton[i].setEnabled(false);
 			}
+			repaint();
 			remainTime.setVisible(false);
 			confirmButton.setVisible(true);
 		}
@@ -132,15 +144,31 @@ public class AnswerPanel extends JPanel implements ActionListener{
 		g.setFont(font.deriveFont(23.0f));
 		g.setColor(Color.WHITE);
 		if(STATE==QSTATE){
-			g.drawString("問題",50 , 180);
-			g.drawString(Question, 50, 210);
+			g.drawString("問題",WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+60);
+			if(Question.length()/MAX!=0){
+				for(int i=0;i<lineCount;i++){
+				g.drawChars(qSentence[i],0, MAX, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*i);
+				}
+				g.drawChars(qSentence[lineCount],0, qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*lineCount);
+				
+			}else{
+				g.drawChars(qSentence[lineCount],0,qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90);	
+			}
 		}
 		else if(STATE==ASTATE){
-			g.drawString("解答", 50, 180);
-			g.drawString(Question, 50, 210);
+			g.drawString("解答", WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+60);
+			if(lineCount!=0){
+				for(int i=0;i<lineCount;i++){
+				g.drawChars(qSentence[i],0, MAX, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*i);
+				}
+				g.drawChars(qSentence[lineCount],0, qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*lineCount);
+				
+			}else{
+				g.drawChars(qSentence[lineCount],0,qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90);	
+			}
 		}
 		else if(STATE==FIRST){
-			g.drawString("待機中",50 , 180);
+			g.drawString("待機中",WIDTH/2-question.getWidth()/2+10 , HEIGHT/6+60);
 		}
 	}
 	
@@ -149,6 +177,14 @@ public class AnswerPanel extends JPanel implements ActionListener{
 			for(int i =0;i<4;i++){
 			if(e.getSource()==ansButton[i]){
 				remainTimer.cancel();
+				questionTimer.cancel();
+				if(Question.length()/MAX==0){
+					qSentencePos = Question.length();
+				}
+				else{
+					lineCount=Question.length()/MAX;
+					qSentencePos = 	Question.length()%MAX;
+				}
 				MainFrame.user.Ans=i;
 			}
 			ansButton[i].setEnabled(false);
@@ -171,6 +207,25 @@ public class AnswerPanel extends JPanel implements ActionListener{
 				STATE=QSTATE;	
 			}
 		}
+	}
+	private void setQuestion(String Question){
+		int line=0;
+		int cp=0;
+		for(int i=0;i<qSentence.length;i++){
+			for(int j=0;j<MAX;j++){
+				qSentence[i][j] = ' ';
+			}
+		}
+		
+		for(int j=0;cp<Question.length();j++){
+			if(j==MAX){
+				line++;
+				j=0;
+			}
+			qSentence[line][j]=Question.charAt(cp++);
+		}
+		questionTask = new QuestionTask();
+		questionTimer.schedule(questionTask,0L,60L);
 	}
 
 private class RemainTask extends TimerTask{
@@ -203,7 +258,7 @@ private class ReadyTask extends TimerTask{
 				ansButton[i].setText(Selection[i]);
 				ansButton[i].setEnabled(true);
 			}
-			repaint();
+			setQuestion(Question);
 			confirmButton.setVisible(false);
 			answer.setVisible(false);
 			
@@ -213,6 +268,20 @@ private class ReadyTask extends TimerTask{
 			remainTime.repaint();
 			remainTimer.scheduleAtFixedRate(remainTask, 0, 1*10);
 		}
+	}
+}
+
+private class QuestionTask extends TimerTask{
+	int length=Question.length();
+	public void run(){
+		if(qSentencePos==length)cancel();
+		qSentencePos++;
+		if(qSentencePos==MAX){
+			lineCount++;
+			qSentencePos=0;
+			length -= MAX;
+		}
+		repaint();
 	}
 }
 }
