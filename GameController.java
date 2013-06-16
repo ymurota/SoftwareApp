@@ -34,11 +34,22 @@ public class GameController extends JPanel{
 		gamePanelRight.gameLoop.start();
 	}
 	public void gameUpdate(){
-		MainFrame.user.statusUpdate(ServerData.getInstance().status1);
-		MainFrame.enemy.statusUpdate(ServerData.getInstance().status2);
-		gamePanelLeft.newHPUpdate(ServerData.getInstance().HP1);
-		gamePanelRight.newHPUpdate(ServerData.getInstance().HP2);
-		ansPanel.update(ServerData.getInstance().selections,ServerData.getInstance().question);
+		ServerData sData = new ServerData();
+		String data = "";//サーバーからのデータは文字列で取得される。
+		sData.decode(data);//サーバーから受け取ったデータをデコードして、データセットする。
+		
+		MainFrame.user.statusUpdate(sData.status);
+		//MainFrame.enemy.statusUpdate(ServerData.getInstance().status2);
+		gamePanelLeft.newHPUpdate(sData.HP);
+		//gamePanelRight.newHPUpdate(sData.HP);
+
+		// シングルトンをやめたので以下の書き方を修正
+		// ansPanel.update(sData.Selections, sData.question);
+		// MainFrame.user.statusUpdate(ServerData.getInstance().status1);
+		// MainFrame.enemy.statusUpdate(ServerData.getInstance().status2);
+		// gamePanelLeft.newHPUpdate(ServerData.getInstance().HP1);
+		// gamePanelRight.newHPUpdate(ServerData.getInstance().HP2);
+		// ansPanel.update(ServerData.getInstance().selections,ServerData.getInstance().question);
 			
 		while(true){
 			if(ansPanel.STATE==ansPanel.ASTATE) {
