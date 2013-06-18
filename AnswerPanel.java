@@ -18,13 +18,11 @@ import java.util.TimerTask;
 
 
 public class AnswerPanel extends JPanel implements ActionListener{
-	private static final int WIDTH=MainFrame.WIDTH/3+103;
+	private static final int WIDTH=MainFrame.WIDTH-291*2;
 	private static final int HEIGHT=MainFrame.HEIGHT;
 	private JButton[] ansButton;
-	private BufferedImage question;
-	private FontCreator fontCreator;
+	private BufferedImage question,time,answerImg,icon;
 	private Font font;
-	private ImageIcon icon;
 	private Timer remainTimer,readyTimer;
 	private RemainTask remainTask;
 	private ReadyTask readyTask;
@@ -37,7 +35,7 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	private String[] Selection;	
 	private double remain;
 	
-	private int MAX=10;
+	private int MAX=20;
 	private int LINE_MAX=10;
 	private char[][] qSentence = new char[LINE_MAX][MAX];
 	private QuestionTask questionTask; 
@@ -49,14 +47,16 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	public int QSTATE=0,ASTATE=1,FIRST=-1;
 	
 	public AnswerPanel(){
-		icon = new ImageIcon(getClass().getResource("btn056_09.gif"));
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		try{
-			question = ImageIO.read(getClass().getResource("img06527fbfzikazj.png"));
+			icon = ImageIO.read(getClass().getResource("selection.png"));
+			question = ImageIO.read(getClass().getResource("hakkou1.png"));
+			time = ImageIO.read(getClass().getResource("time.png"));
+			answerImg = ImageIO.read(getClass().getResource("answer.png"));
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		Question="";
+		Question=" ";
 		Selection = new String[4];
 		for(int i=0;i<4;i++){
 			Selection[i]=" ";
@@ -64,40 +64,46 @@ public class AnswerPanel extends JPanel implements ActionListener{
 		setLayout(null);
 		ansButton = new JButton[4];
 		for(int i=0;i<4;i++){
-			ansButton[i] = new JButton(Selection[i],icon);
-			ansButton[i].setBounds(WIDTH/2-130,HEIGHT/2+40*i,icon.getIconWidth(),icon.getIconHeight());
-			ansButton[i].setForeground(Color.BLACK);
+			ansButton[i] = new JButton(Selection[i],new ImageIcon(icon));
+			ansButton[i].setBounds(WIDTH/2-icon.getWidth()/2,HEIGHT/2+10+40*i,
+					icon.getWidth(),icon.getHeight());
+			ansButton[i].setForeground(Color.WHITE);
+			ansButton[i].setFont(FontCreator.getFont(1).deriveFont(23.0f));
 			ansButton[i].setHorizontalTextPosition(JButton.CENTER);
 			ansButton[i].addActionListener(this);
+			ansButton[i].setContentAreaFilled(false);
 			add(ansButton[i]);
 		}
-		fontCreator = new FontCreator("れいこフォント.TTF");
-		font = fontCreator.createFont();
+		font = FontCreator.getFont(1);
 		
 		readyTime = new JLabel("開始まで:"+ready);
 		readyTime.setForeground(Color.WHITE);
-		readyTime.setBounds(WIDTH/8,HEIGHT/2-50,150,80);
+		readyTime.setBounds(WIDTH/2-180,HEIGHT/2-60,150,80);
 		readyTime.setVisible(false);
 		add(readyTime);
 		
 		remainTime = new JLabel("残り時間:"+remain);
 		remainTime.setForeground(Color.WHITE);
-		remainTime.setBounds(WIDTH/8,HEIGHT/2-50,150,80);
+		remainTime.setBounds(WIDTH/2-180,HEIGHT/2-60,150,80);
 		remainTime.setVisible(false);
 		add(remainTime);
 		
 		answer = new JLabel();
-		answer.setBounds(WIDTH/2-130,HEIGHT-100,200,100);
+		answer.setBounds(WIDTH/2-130,HEIGHT-90,200,100);
 		answer.setVisible(false);
 		answer.setForeground(Color.WHITE);
 		answer.setFont(font.deriveFont(20.0f));
 		add(answer);
 		
-		confirmButton = new JButton("次へ",icon);
-		confirmButton.setBounds(WIDTH/2-130,HEIGHT-150,icon.getIconWidth(),icon.getIconHeight());
+		confirmButton = new JButton("NEXT",new ImageIcon(icon));
+		confirmButton.setBounds(WIDTH/2-icon.getWidth()/2,HEIGHT-150,
+				icon.getWidth(),icon.getHeight());
+		confirmButton.setForeground(Color.WHITE);
 		confirmButton.setHorizontalTextPosition(JButton.CENTER);
 		confirmButton.setVisible(false);
+		confirmButton.setFont(FontCreator.getFont(1).deriveFont(23.0f));
 		confirmButton.addActionListener(this);
+		confirmButton.setContentAreaFilled(false);
 		add(confirmButton);
 		
 		STATE=FIRST;
@@ -138,38 +144,77 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	}
 	
 	public void paintComponent(Graphics g){
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		g.drawImage(question,WIDTH/2-question.getWidth()/2,HEIGHT/2-question.getHeight(),null);
-		g.setFont(font.deriveFont(23.0f));
+		int qw = question.getWidth();
+		int qh = question.getHeight();
+		g.drawImage(MainFrame.gameControllerPanel.background,
+				0,0,
+				WIDTH,HEIGHT,
+				291,0,
+				291+WIDTH,HEIGHT,
+				null);
+		g.drawImage(question,
+				WIDTH/2-qw/2,
+				HEIGHT/2-qh,null);
+		g.drawImage(time,
+				WIDTH/2-qw/2+20,
+				HEIGHT/2-40,null);
+		g.setFont(font.deriveFont(20.0f));
 		g.setColor(Color.WHITE);
 		if(STATE==QSTATE){
-			g.drawString("問題",WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+60);
+			g.drawString("問題",
+					WIDTH/2-qw/2+30, 
+					HEIGHT/2-qh+50);
 			if(Question.length()/MAX!=0){
 				for(int i=0;i<lineCount;i++){
-				g.drawChars(qSentence[i],0, MAX, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*i);
+				g.drawChars(qSentence[i],
+						0,
+						MAX, 
+						WIDTH/2-qw/2+30, 
+						HEIGHT/2-qh+80+20*i);
 				}
-				g.drawChars(qSentence[lineCount],0, qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*lineCount);
+				g.drawChars(qSentence[lineCount],0, qSentencePos, 
+						WIDTH/2-qw/2+30, 
+						HEIGHT/2-qh+80+20*lineCount);
 				
 			}else{
-				g.drawChars(qSentence[lineCount],0,qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90);	
+				g.drawChars(qSentence[lineCount],
+						0,
+						qSentencePos, 
+						WIDTH/2-qw/2+30, 
+						HEIGHT/2-qh+80);	
 			}
 		}
 		else if(STATE==ASTATE){
-			g.drawString("解答", WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+60);
+			g.drawString("解答", 
+					WIDTH/2-qw/2+30, 
+					HEIGHT/2-qh+60);
 			if(lineCount!=0){
 				for(int i=0;i<lineCount;i++){
-				g.drawChars(qSentence[i],0, MAX, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*i);
+				g.drawChars(qSentence[i],0, 
+						MAX, 
+						WIDTH/2-qw/2+30, 
+						HEIGHT/2-qh+80+20*i);
 				}
-				g.drawChars(qSentence[lineCount],0, qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90+20*lineCount);
+				g.drawChars(qSentence[lineCount],
+						0, 
+						qSentencePos, 
+						WIDTH/2-qw/2+30, 
+						HEIGHT/2-qh+80+20*lineCount);
 				
 			}else{
-				g.drawChars(qSentence[lineCount],0,qSentencePos, WIDTH/2-question.getWidth()/2+10, HEIGHT/2-question.getHeight()+90);	
+				g.drawChars(qSentence[lineCount],
+						0,
+						qSentencePos, 
+						WIDTH/2-qw/2+30, 
+						HEIGHT/2-qh+80);	
 			}
 		}
 		else if(STATE==FIRST){
-			g.drawString("待機中",WIDTH/2-question.getWidth()/2+10 , HEIGHT/6+60);
+			g.drawString("待機中",
+					WIDTH/2-qw/2+30 ,
+					HEIGHT/2-qh+50);
 		}
+		g.drawImage(answerImg,WIDTH/2-answerImg.getWidth()/2,HEIGHT-70,null);
 	}
 	
 	public void actionPerformed(ActionEvent e){
@@ -230,8 +275,15 @@ public class AnswerPanel extends JPanel implements ActionListener{
 
 private class RemainTask extends TimerTask{
 	public void run(){
+		remainTime.setForeground(Color.WHITE);
 		remain -= 0.01;
 		remainTime.setText("残り時間:"+df.format(remain));
+		if(remain<=3.0){
+			remainTime.setForeground(Color.YELLOW);
+		}
+		if(remain<=1.0){
+			remainTime.setForeground(Color.RED);
+		}
 		if(remain<=0){
 			remainTimer.cancel();
 			for(int i=0;i<4;i++){

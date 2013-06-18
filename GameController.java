@@ -1,22 +1,29 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
 public class GameController extends JPanel{
 	private static final int WIDTH=MainFrame.WIDTH;
 	private static final int HEIGHT=MainFrame.HEIGHT;
+    private AnswerPanel ansPanel;
+	private GamePanel gamePanelLeft,gamePanelRight;
+	private int STATE;
+	private int QSTATE=0,ASTATE=1;
 	
-    private ImageIcon enemyIcon;
-    
-    public AnswerPanel ansPanel;
-	public GamePanel gamePanelLeft,gamePanelRight;
-	
+	public BufferedImage background;
 	public GameController(){
-		enemyIcon = new ImageIcon(getClass().getResource("22024.png"));
-		MainFrame.enemy = new User("enemy",enemyIcon,User.ENEMY);
+		MainFrame.enemy = new User("enemy",User.ENEMY);
+		
+		try{
+			background = ImageIO.read(getClass().getResource("image04.jpg"));
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 		
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		setLayout(new BorderLayout());
@@ -28,6 +35,7 @@ public class GameController extends JPanel{
 		add(gamePanelLeft,BorderLayout.WEST);
 		add(ansPanel,BorderLayout.CENTER);
 		add(gamePanelRight,BorderLayout.EAST);
+		STATE=QSTATE;
 	}
 	public void setup(){
 		gamePanelLeft.gameLoop.start();
@@ -37,7 +45,28 @@ public class GameController extends JPanel{
 		ServerData sData = new ServerData();
 		String data = "";//サーバーからのデータは文字列で取得される。
 		sData.decode(data);//サーバーから受け取ったデータをデコードして、データセットする。
-		
+		if(STATE==QSTATE){
+			while(true){
+				if(ansPanel.STATE!=ansPanel.QSTATE){
+					try{
+						Thread.sleep(500);//0.5sec毎に確認
+					}catch(InterruptedException e){
+						e.printStackTrace();
+					}
+				}else break;
+			}
+		}
+		else if(STATE==ASTATE){
+			while(true){
+				if(ansPanel.STATE!=ansPanel.ASTATE){
+					try{
+						Thread.sleep(500);//0.5sec毎に確認
+					}catch(InterruptedException e){
+						e.printStackTrace();
+					}
+				}else break;
+			}
+		}
 		MainFrame.user.statusUpdate(sData.status);
 		//MainFrame.enemy.statusUpdate(ServerData.getInstance().status2);
 		gamePanelLeft.newHPUpdate(sData.HP);
@@ -51,6 +80,7 @@ public class GameController extends JPanel{
 		// gamePanelRight.newHPUpdate(ServerData.getInstance().HP2);
 		// ansPanel.update(ServerData.getInstance().selections,ServerData.getInstance().question);
 			
+		
 		while(true){
 			if(ansPanel.STATE==ansPanel.ASTATE) {
 				ClientData.getInstance().set(MainFrame.user.Ans,MainFrame.user.Remain);
@@ -62,5 +92,14 @@ public class GameController extends JPanel{
 				e.printStackTrace();
 			}
 		}
+		if(STATE==QSTATE){
+			STATE=ASTATE;
+		}
+		else {
+			STATE=QSTATE;
+		}
+	}
+	public void toHome(){
+		MainFrame.cl.show(MainFrame.cardPanel, "Home");
 	}
 }
