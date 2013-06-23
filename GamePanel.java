@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private Image dBuffer = null;
 	private DecimalFormat df = new DecimalFormat("0.0");
 	private int STATE=0;
-	
+	private int STOP = -1;
     public static int LEFT=0,RIGHT=1;
     public int newHP;
 	public Thread gameLoop;
@@ -42,9 +42,9 @@ public class GamePanel extends JPanel implements Runnable{
 		prevCalcTime = beforeTime;
 		int tmpHP;
 		while(true){
-			
+			if(STATE==STOP)break;
 			if(POSITION==LEFT)tmpHP=MainFrame.user.HP;
-			else tmpHP=MainFrame.enemy.HP;
+			else tmpHP=MainFrame.opponent.HP;
 			if(Math.max(tmpHP, newHP+1)==tmpHP){
 				tmpHP--;
 				update(tmpHP);//newHP‚É‚È‚é‚Ü‚Å1‚¸‚ÂŒ¸‚ç‚·
@@ -82,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable{
 			newHP = MainFrame.user.HP;
 			}
 			else{
-				newHP = MainFrame.enemy.HP;
+				newHP = MainFrame.opponent.HP;
 			}
 				STATE=1;break;
 		case 1:
@@ -90,7 +90,7 @@ public class GamePanel extends JPanel implements Runnable{
 				MainFrame.user.HPUpdate(i);
 			}
 			else{
-				MainFrame.enemy.HPUpdate(i);
+				MainFrame.opponent.HPUpdate(i);
 			}
 		break;
 		}
@@ -106,14 +106,14 @@ public class GamePanel extends JPanel implements Runnable{
 	            }
 		}
 		if(POSITION==LEFT){
-			dbg.drawImage(MainFrame.gameControllerPanel.background,
+			dbg.drawImage(MainFrame.gameController.background,
 					0,0,
 					WIDTH,HEIGHT,
 					0,0,
 					WIDTH,HEIGHT,
 					null);
 		}else{
-			dbg.drawImage(MainFrame.gameControllerPanel.background,
+			dbg.drawImage(MainFrame.gameController.background,
 					0,0,
 					WIDTH,HEIGHT,
 					MainFrame.WIDTH-291,0,
@@ -126,7 +126,7 @@ public class GamePanel extends JPanel implements Runnable{
 			dbg.drawString("FPS:"+df.format(actualFPS),15,20);
 		MainFrame.user.draw(dbg);
 		}
-		else MainFrame.enemy.draw(dbg);
+		else MainFrame.opponent.draw(dbg);
 	}
 	private void print(){
 		try{
@@ -155,5 +155,8 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	public void newHPUpdate(int HP){
 		newHP=HP;
+	}
+	public void loopStop(){
+		STATE = STOP;
 	}
 }

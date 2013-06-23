@@ -21,7 +21,7 @@ public class User {
 	private GradientPaint grad;
 	private Font font;
 	private int TYPE;
-	public final static int USER=0,ENEMY=-1;
+	public final static int USER=0,OPPONENT=-1;
 	public User(String userName,int type){
 		this.userName = userName;
 		this.HP=100;
@@ -29,8 +29,8 @@ public class User {
 		hpRect = new Rectangle(75,MainFrame.HEIGHT-41,HP*2,15);
 		font = FontCreator.getFont(1);
 		try{
-			if(type == USER)icon = ImageIO.read(getClass().getResource("yaranaio.jpg"));
-			else icon  = ImageIO.read(getClass().getResource("22024.png"));
+			if(type == USER)icon = ImageIO.read(getClass().getResource("mrt1.png"));
+			else icon  = ImageIO.read(getClass().getResource("mrt4.png"));
 			statusImage = ImageIO.read(getClass().getResource("2hu1.png"));
 			HPImage = ImageIO.read(getClass().getResource("HP6.png"));	
 		}catch(IOException e){

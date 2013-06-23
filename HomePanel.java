@@ -33,7 +33,7 @@ public class HomePanel extends JPanel implements ActionListener{
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		button = new JButton[3];
+		button = new JButton[2];
 		button[0] = new JButton("START",new ImageIcon(icon));
 		button[1] = new JButton("EXIT",new ImageIcon(icon));
 		for(int i=0;i<2;i++){
@@ -55,16 +55,13 @@ public class HomePanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if(action==button[0]){
-			SE.getSE().playSE(1);
-			MainFrame.gameControllerPanel.setup();
+			//SE.getSE().playSE(1);
+			MainFrame.gameController.setup();
+			MainFrame.STATE=MainFrame.START;
 			MainFrame.cl.show(MainFrame.cardPanel, "Controller");
-			MainFrame.clientTest.thread.start();
 		}
 		else if(action==button[1]){
-			MainFrame.cl.show(MainFrame.cardPanel, "Manual");
-		}
-		else if(action==button[2]){
-			SE.getSE().playSE(1);
+			//SE.getSE().playSE(1);
 			try{
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 				SwingUtilities.updateComponentTreeUI(this);

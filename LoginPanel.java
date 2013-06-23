@@ -84,7 +84,7 @@ public class LoginPanel extends JPanel implements ActionListener,KeyListener{
 	}
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource()==button){
-			SE.getSE().playSE(1);
+			//SE.getSE().playSE(1);
 			if(textField.getText().length()!=0){
 				MainFrame.user = new User(textField.getText(),
 						User.USER);

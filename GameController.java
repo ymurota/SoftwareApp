@@ -17,10 +17,10 @@ public class GameController extends JPanel{
 	
 	public BufferedImage background;
 	public GameController(){
-		MainFrame.enemy = new User("enemy",User.ENEMY);
+		MainFrame.opponent = new User("Opponent",User.OPPONENT);
 		
 		try{
-			background = ImageIO.read(getClass().getResource("image04.jpg"));
+			background = ImageIO.read(getClass().getResource("img_980681_27657870_0.jpg"));
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -35,16 +35,20 @@ public class GameController extends JPanel{
 		add(gamePanelLeft,BorderLayout.WEST);
 		add(ansPanel,BorderLayout.CENTER);
 		add(gamePanelRight,BorderLayout.EAST);
-		STATE=QSTATE;
+		STATE = QSTATE;
 	}
 	public void setup(){
 		gamePanelLeft.gameLoop.start();
 		gamePanelRight.gameLoop.start();
 	}
-	public void gameUpdate(){
-		ServerData sData = new ServerData();
-		String data = "";//サーバーからのデータは文字列で取得される。
-		sData.decode(data);//サーバーから受け取ったデータをデコードして、データセットする。
+	public String gameUpdate(String[] data){
+		ServerData[] sData = new ServerData[2];
+		for(int i=0;i<2;i++){
+			sData[i] = new ServerData();
+			sData[i].decode(data[i]);
+		}
+		ClientData cData = new ClientData();
+		
 		if(STATE==QSTATE){
 			while(true){
 				if(ansPanel.STATE!=ansPanel.QSTATE){
@@ -67,24 +71,22 @@ public class GameController extends JPanel{
 				}else break;
 			}
 		}
-		MainFrame.user.statusUpdate(sData.status);
-		//MainFrame.enemy.statusUpdate(ServerData.getInstance().status2);
-		gamePanelLeft.newHPUpdate(sData.HP);
-		//gamePanelRight.newHPUpdate(sData.HP);
-
-		// シングルトンをやめたので以下の書き方を修正
-		// ansPanel.update(sData.Selections, sData.question);
-		// MainFrame.user.statusUpdate(ServerData.getInstance().status1);
-		// MainFrame.enemy.statusUpdate(ServerData.getInstance().status2);
-		// gamePanelLeft.newHPUpdate(ServerData.getInstance().HP1);
-		// gamePanelRight.newHPUpdate(ServerData.getInstance().HP2);
-		// ansPanel.update(ServerData.getInstance().selections,ServerData.getInstance().question);
+		MainFrame.user.statusUpdate(sData[0].status);
+		MainFrame.opponent.statusUpdate(sData[1].status);
+		gamePanelLeft.newHPUpdate(sData[0].HP);
+		gamePanelRight.newHPUpdate(sData[1].HP);
+		ansPanel.update(sData[0].selections, sData[0].question);
 			
-		
 		while(true){
 			if(ansPanel.STATE==ansPanel.ASTATE) {
-				ClientData.getInstance().set(MainFrame.user.Ans,MainFrame.user.Remain);
-				break;
+				if(STATE==QSTATE){
+					STATE=ASTATE;
+				}
+				else {
+					STATE=QSTATE;
+				}
+				cData.set(MainFrame.user.Ans,MainFrame.user.Remain);
+				return cData.encode();
 			}
 			try{
 				Thread.sleep(500);//0.5sec毎に確認
@@ -92,14 +94,10 @@ public class GameController extends JPanel{
 				e.printStackTrace();
 			}
 		}
-		if(STATE==QSTATE){
-			STATE=ASTATE;
-		}
-		else {
-			STATE=QSTATE;
-		}
 	}
 	public void toHome(){
+		gamePanelLeft.loopStop();
+		gamePanelRight.loopStop();
 		MainFrame.cl.show(MainFrame.cardPanel, "Home");
 	}
 }

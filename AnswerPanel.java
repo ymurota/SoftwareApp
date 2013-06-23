@@ -49,7 +49,7 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	public AnswerPanel(){
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		try{
-			icon = ImageIO.read(getClass().getResource("selection.png"));
+			icon = ImageIO.read(getClass().getResource("seletion.png"));
 			question = ImageIO.read(getClass().getResource("hakkou1.png"));
 			time = ImageIO.read(getClass().getResource("time.png"));
 			answerImg = ImageIO.read(getClass().getResource("answer.png"));
@@ -146,7 +146,7 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	public void paintComponent(Graphics g){
 		int qw = question.getWidth();
 		int qh = question.getHeight();
-		g.drawImage(MainFrame.gameControllerPanel.background,
+		g.drawImage(MainFrame.gameController.background,
 				0,0,
 				WIDTH,HEIGHT,
 				291,0,
