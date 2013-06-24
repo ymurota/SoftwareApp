@@ -20,16 +20,16 @@ public class QuizThread extends Thread
 	{
 		try
 		{
-			out.write(ServerSystem.server_data[player_number].encode()); //改定予定:配列すべてを送る必要あり
-			out.newLine();
-			out.flush();
+			for(int i=0; i < ServerSystem.client_number; ++i)
+			{
+				out.write(ServerSystem.server_data[player_number].encode());
+				out.newLine();
+				out.flush();
+			}
 
 			String line;
 
-			while((line = in.readLine()) == null)
-			{
-
-			}
+			line = in.readLine();
 
 			ServerSystem.client_data[player_number].decode(line);
 			ServerSystem.data_valid_number += 1;

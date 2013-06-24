@@ -34,27 +34,41 @@ public class Server
 				ServerSystem.selectQuestionData();
 				ServerSystem.reset();
 
-				for(int i=0; i<CLIENT_MAX; ++i)
+				for(int i=0; i<client_number; ++i)
 				{
 					quiz_thread[i].start();
 				}
 
-				while(ServerSystem.data_valid_number < ServerSystem.client_number)
+				try
 				{
-
+					for(int i=0; i<client_number; ++i)
+					{
+						quiz_thread[i].join();
+					}
+				}
+				catch(InterruptedException e)
+				{
+					System.out.println(e);
 				}
 
 				ServerSystem.judge();
 				ServerSystem.reset();
 
-				for(int i=0; i<CLIENT_MAX; ++i)
+				for(int i=0; i<client_number; ++i)
 				{
 					quiz_thread[i].start();
 				}
 
-				while(ServerSystem.data_valid_number < ServerSystem.client_number)
+				try
 				{
-
+					for(int i=0; i<client_number; ++i)
+					{
+						quiz_thread[i].join();
+					}
+				}
+				catch(InterruptedException e)
+				{
+					System.out.println(e);
 				}
 			}
 		}
