@@ -5,6 +5,7 @@ public class Client
 {
 	static BufferedReader in;
 	static BufferedWriter out;
+	public static MainFrame mainFrame = new MainFrame();
 
 	public static void communication()
 	{
@@ -17,7 +18,7 @@ public class Client
 				server_data[i] = in.readLine();
 			}
 
-			String client_data = gameUpdate(server_data);	//gameControllerはどこで持つ？
+			String client_data = this.mainFrame.updateFrame(server_data);	//gameControllerはどこで持つ？
 
 			out.write(client_data);
 			out.newLine();

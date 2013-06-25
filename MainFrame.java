@@ -37,26 +37,26 @@ public class MainFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-	public static void main(String[] args){
+	public String updateFrame(String[] data){
 		new DisplaySize().setLocationRelativeTo(null);
 		//以下テスト用
-		String cData ;
-		String[] selection = new String[4];
-		for(int i=0;i<4;i++){
-			selection[i]= "選択肢"+i;
-		}
-		String[] selection2 = new String[4];
-		for(int i=0;i<4;i++){
-			selection2[i] = "";
-		}
-		ServerData[] sData = new ServerData[2];
-		sData[0] = new ServerData();
-		sData[1] = new ServerData();
-		sData[0].set("1+1",selection,"ダメージ30",80);
-		sData[1].set(" ",selection2,"ダメージ40",70);
-		String[] data = new String[2];
-		data[0] = sData[0].encode();
-		data[1] = sData[1].encode();
+		// String cData ;
+		// String[] selection = new String[4];
+		// for(int i=0;i<4;i++){
+		// 	selection[i]= "選択肢"+i;
+		// }
+		// String[] selection2 = new String[4];
+		// for(int i=0;i<4;i++){
+		// 	selection2[i] = "";
+		// }
+		// ServerData[] sData = new ServerData[2];
+		// sData[0] = new ServerData();
+		// sData[1] = new ServerData();
+		// sData[0].set("1+1",selection,"ダメージ30",80);
+		// sData[1].set(" ",selection2,"ダメージ40",70);
+		// String[] data = new String[2];
+		// data[0] = sData[0].encode();
+		// data[1] = sData[1].encode();
 		
 		
 		while(true){
@@ -68,6 +68,6 @@ public class MainFrame extends JFrame{
 			}
 		}
 		cData = MainFrame.gameController.gameUpdate(data);
-		System.out.println(cData);
+		return cData;
 	}
 }
