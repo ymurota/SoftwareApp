@@ -37,7 +37,7 @@ public class MainFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-	public String updateFrame(String[] data){
+	public static String updateFrame(String[] data){
 		new DisplaySize().setLocationRelativeTo(null);
 		//以下テスト用
 		// String cData ;
