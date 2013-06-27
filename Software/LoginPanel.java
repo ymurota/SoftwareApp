@@ -76,6 +76,7 @@ public class LoginPanel extends JPanel implements ActionListener,KeyListener{
 		addKeyListener(this);
 	}
 	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		g.setFont(font.deriveFont(27.0f));

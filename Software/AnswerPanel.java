@@ -144,6 +144,7 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	}
 	
 	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		int qw = question.getWidth();
 		int qh = question.getHeight();
 		g.drawImage(MainFrame.gameController.background,

@@ -71,12 +71,12 @@ public class HomePanel extends JPanel implements ActionListener{
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-			message = new JLabel("ÇŸÇÒÇ∆Ç…ÅH");
+			message = new JLabel("EXIT?");
 			message.setFont(f1.deriveFont(23.0f));
-			String[] option = {"ÇŸÇÒÇ∆","Ç§Çª"};
+			String[] option = {"YES","NO"};
 			int OPTION =JOptionPane.showOptionDialog(this,
 					message,
-					"Ç®ÇÌÇÈ",
+					"EXIT",
 					JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
 					null,

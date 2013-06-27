@@ -56,7 +56,12 @@ public class User {
 		this.Ans = ans;
 	}
 	public void statusUpdate(String status){
-		Status = status;
+		if(status==""){
+			Status = "waiting";
+		}
+		else{
+			Status = "Damage"+status;
+		}
 	}
 	public void draw(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;

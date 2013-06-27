@@ -42,9 +42,15 @@ public class GamePanel extends JPanel implements Runnable{
 		prevCalcTime = beforeTime;
 		int tmpHP;
 		while(true){
-			if(STATE==STOP)break;
-			if(POSITION==LEFT)tmpHP=MainFrame.user.HP;
-			else tmpHP=MainFrame.opponent.HP;
+			if(STATE==STOP){
+				break;
+			}
+			if(POSITION==LEFT){
+				tmpHP=MainFrame.user.HP;
+			}
+			else {
+				tmpHP=MainFrame.opponent.HP;
+			}
 			if(Math.max(tmpHP, newHP+1)==tmpHP){
 				tmpHP--;
 				update(tmpHP);
@@ -99,7 +105,7 @@ public class GamePanel extends JPanel implements Runnable{
 		if(dBuffer==null){
 			dBuffer = createImage(WIDTH,HEIGHT);
 			 if (dBuffer == null) {
-	                System.out.println("dBuffer1 is null");
+	                System.out.println("dBuffer is null");
 	                return;
 	            } else {
 	                dbg = dBuffer.getGraphics();

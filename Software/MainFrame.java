@@ -15,8 +15,8 @@ public class MainFrame extends JFrame{
 	public static GameController gameController;
 	public static User user;
 	public static User opponent;
-	public static int FIRST=0,START=1;
-	public static int STATE=FIRST;
+	public static int WAIT=0,START=1;
+	public static int STATE=WAIT;
 	public MainFrame(){
 		cardPanel = new JPanel();
 		cardPanel.setLayout(new CardLayout());
@@ -37,28 +37,7 @@ public class MainFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-	public static void main(String[] args){
-		new DisplaySize().setLocationRelativeTo(null);
-
-		String cData ;
-		String[] selection = new String[4];
-		for(int i=0;i<4;i++){
-			selection[i]= "選択肢"+i;
-		}
-		String[] selection2 = new String[4];
-		for(int i=0;i<4;i++){
-			selection2[i] = "";
-		}
-		ServerData[] sData = new ServerData[2];
-		sData[0] = new ServerData();
-		sData[1] = new ServerData();
-		sData[0].set("1+1",selection,"ダメージ30",80);
-		sData[1].set(" ",selection2,"ダメージ40",70);
-		String[] data = new String[2];
-		data[0] = sData[0].encode();
-		data[1] = sData[1].encode();
-		
-		
+	public static String updateFrame(String[] data){
 		while(true){
 			if(STATE==START)break;
 			try{
@@ -67,7 +46,8 @@ public class MainFrame extends JFrame{
 				e.printStackTrace();
 			}
 		}
+		String cData;
 		cData = MainFrame.gameController.gameUpdate(data);
-		System.out.println(cData);
+		return cData;
 	}
 }

@@ -20,6 +20,7 @@ public class TitlePanel extends JPanel implements MouseListener,KeyListener{
 		addKeyListener(this);
 	}
 	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		title.draw(g);

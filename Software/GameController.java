@@ -53,7 +53,7 @@ public class GameController extends JPanel{
 			while(true){
 				if(ansPanel.STATE!=ansPanel.QSTATE){
 					try{
-						Thread.sleep(500);//0.5sec毎に確認
+						Thread.sleep(500);
 					}catch(InterruptedException e){
 						e.printStackTrace();
 					}
@@ -64,7 +64,7 @@ public class GameController extends JPanel{
 			while(true){
 				if(ansPanel.STATE!=ansPanel.ASTATE){
 					try{
-						Thread.sleep(500);//0.5sec毎に確認
+						Thread.sleep(500);
 					}catch(InterruptedException e){
 						e.printStackTrace();
 					}
@@ -89,15 +89,40 @@ public class GameController extends JPanel{
 				return cData.encode();
 			}
 			try{
-				Thread.sleep(500);//0.5sec毎に確認
+				Thread.sleep(500);
 			}catch(InterruptedException e){
 				e.printStackTrace();
 			}
 		}
 	}
 	public void toHome(){
+		try{
+			Thread.sleep(3000);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+		
 		gamePanelLeft.loopStop();
 		gamePanelRight.loopStop();
+		
+		remove(ansPanel);
+		remove(gamePanelLeft);
+		remove(gamePanelRight);
+		
+		gamePanelLeft = new GamePanel(GamePanel.LEFT);
+		gamePanelRight = new GamePanel(GamePanel.RIGHT);
+		ansPanel = new AnswerPanel();
+		
+		add(gamePanelLeft,BorderLayout.WEST);
+		add(ansPanel,BorderLayout.CENTER);
+		add(gamePanelRight,BorderLayout.EAST);
+		
+		MainFrame.opponent = new User("Opponent",User.OPPONENT);
+		MainFrame.user = new User(MainFrame.user.userName,User.USER);
+		
+		STATE = QSTATE;
+		MainFrame.STATE=MainFrame.WAIT;
+
 		MainFrame.cl.show(MainFrame.cardPanel, "Home");
 	}
 }
