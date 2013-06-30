@@ -23,11 +23,16 @@ public class QuizThread extends Thread
 			for(int i=0; i < ServerSystem.client_number; ++i)
 			{
 				//out.write(ServerSystem.server_data[player_number].encode());
-				out.write(ServerSystem.server_data[i].encode());
+				switch(player_number){
+				case 0:out.write(ServerSystem.server_data[i].encode());
+				break;
+				case 1:out.write(ServerSystem.server_data[ServerSystem.client_number-1-i].encode());
+				break;
+				}
+				//out.write(ServerSystem.server_data[i].encode());
 				out.newLine();
 				out.flush();
 			}
-
 			String line;
 
 			line = in.readLine();

@@ -1,9 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
@@ -19,11 +17,7 @@ public class GameController extends JPanel{
 	public GameController(){
 		MainFrame.opponent = new User("Opponent",User.OPPONENT);
 		
-		try{
-			background = ImageIO.read(getClass().getResource("l_126.png"));
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		background = ImageEngine.getImage("gBack");
 		
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		setLayout(new BorderLayout());

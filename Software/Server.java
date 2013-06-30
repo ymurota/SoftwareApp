@@ -28,9 +28,10 @@ public class Server
 
 			System.out.println("Game Start");
 			ServerSystem.set(client_number);
-
+			ServerSystem.makeQuestionList();
+			
 			while(!ServerSystem.is_dead)
-			{	ServerSystem.makeQuestionList();
+			{
 				ServerSystem.selectQuestionData();
 				ServerSystem.reset();
 

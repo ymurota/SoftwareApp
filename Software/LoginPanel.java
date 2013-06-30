@@ -8,9 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.awt.Font;
-import javax.imageio.ImageIO;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,16 +22,12 @@ public class LoginPanel extends JPanel implements ActionListener,KeyListener{
 	private static final int HEIGHT=MainFrame.HEIGHT;
 	private JTextField textField;
 	private JButton button;
-	private BufferedImage icon;
+	private BufferedImage icon,back;
 	private Font font,font2;
 	
-	public ImageIcon[] iconSelect;
 	public LoginPanel(){
-		try{
-			icon = ImageIO.read(getClass().getResource("Button.gif"));
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		icon = ImageEngine.getImage("button1");
+		back = ImageEngine.getImage("lBack");
 		
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		setLayout(null);
@@ -65,8 +60,10 @@ public class LoginPanel extends JPanel implements ActionListener,KeyListener{
 		textField.addKeyListener(this);
 		
 		button = new JButton(new ImageIcon(icon));
-		button.setBounds(WIDTH/2-10,HEIGHT/2+25,
-				icon.getWidth(),icon.getHeight());
+		button.setBounds(WIDTH/2-10,
+						HEIGHT/2+25,
+						icon.getWidth(),
+						icon.getHeight());
 		button.setFont(font2.deriveFont(23.0f));
 		button.setContentAreaFilled(false);
 		button.setBorderPainted(false);
@@ -79,9 +76,15 @@ public class LoginPanel extends JPanel implements ActionListener,KeyListener{
 		super.paintComponent(g);
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
+		g.drawImage(back, 
+				WIDTH/2-330, 
+				HEIGHT/2-190,
+				null);
 		g.setFont(font.deriveFont(27.0f));
 		g.setColor(Color.WHITE);
-		g.drawString("USER NAME :", WIDTH/2-130, HEIGHT/2+10);
+		g.drawString("USER NAME :", 
+					WIDTH/2-130, 
+					HEIGHT/2+10);
 	}
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource()==button){

@@ -5,11 +5,9 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Timer;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,14 +19,15 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	private static final int WIDTH=MainFrame.WIDTH-291*2;
 	private static final int HEIGHT=MainFrame.HEIGHT;
 	private JButton[] ansButton;
-	private BufferedImage question,time,answerImg,icon;
-	private Font font;
+	private BufferedImage question,time,answerImg,sButton,next;
+	private BufferedImage[] selectionImg;
+	private Font font = FontCreator.getFont(1);;
 	private Timer remainTimer,readyTimer;
 	private RemainTask remainTask;
 	private ReadyTask readyTask;
-	private JLabel remainTime,readyTime;
+	private JLabel remainTime,readyTime,yourAns;
+	private JLabel[][] sLabel;
 	private double ready;
-	private JLabel answer;
 	private JButton confirmButton;
 	private DecimalFormat df = new DecimalFormat("0.0");
 	private String Question;
@@ -48,60 +47,81 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	
 	public AnswerPanel(){
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
-		try{
-			icon = ImageIO.read(getClass().getResource("selection.png"));
-			question = ImageIO.read(getClass().getResource("hakkou1.png"));
-			time = ImageIO.read(getClass().getResource("time.png"));
-			answerImg = ImageIO.read(getClass().getResource("answer.png"));
-		}catch(IOException e){
-			e.printStackTrace();
+		setLayout(null);
+		
+		sButton = ImageEngine.getImage("sButton");
+		question = ImageEngine.getImage("question");
+		time = ImageEngine.getImage("time");
+		answerImg = ImageEngine.getImage("yourAns");
+		next = ImageEngine.getImage("next");
+		selectionImg = new BufferedImage[4];
+		for(int i=0;i<4;i++){
+			selectionImg[i] = ImageEngine.getImage("selection");
 		}
+		
+		
 		Question=" ";
 		Selection = new String[4];
 		for(int i=0;i<4;i++){
 			Selection[i]=" ";
 		}
-		setLayout(null);
+		sLabel = new JLabel[4][2];
+		for(int i=0;i<4;i++){
+			for(int j=0;j<2;j++){
+				sLabel[i][j] = new JLabel(" ");
+				sLabel[i][j].setForeground(Color.WHITE);
+				sLabel[i][j].setFont(font.deriveFont(18.0f));
+				sLabel[i][j].setBounds(WIDTH/2-330,
+					HEIGHT/2-80+80*i+35*j,
+					450,
+					45);
+				add(sLabel[i][j]);
+			}
+		}
+		
 		ansButton = new JButton[4];
 		for(int i=0;i<4;i++){
-			ansButton[i] = new JButton(Selection[i],new ImageIcon(icon));
-			ansButton[i].setBounds(WIDTH/2-icon.getWidth()/2,HEIGHT/2+10+40*i,
-					icon.getWidth(),icon.getHeight());
+			ansButton[i] = new JButton("ã“ã‚Œã«ã™ã‚‹",new ImageIcon(sButton));
+			ansButton[i].setBounds(WIDTH/2+130,
+					HEIGHT/2-70+80*i,
+					sButton.getWidth(),
+					sButton.getHeight());
 			ansButton[i].setForeground(Color.WHITE);
-			ansButton[i].setFont(FontCreator.getFont(1).deriveFont(23.0f));
+			ansButton[i].setFont(font.deriveFont(18.0f));
 			ansButton[i].setHorizontalTextPosition(JButton.CENTER);
 			ansButton[i].addActionListener(this);
 			ansButton[i].setContentAreaFilled(false);
 			add(ansButton[i]);
 		}
-		font = FontCreator.getFont(1);
 		
-		readyTime = new JLabel("ŠJŽn‚Ü‚Å:"+ready);
+		readyTime = new JLabel("é–‹å§‹ã¾ã§:"+ready);
 		readyTime.setForeground(Color.WHITE);
-		readyTime.setBounds(WIDTH/2-180,HEIGHT/2-60,150,80);
+		readyTime.setBounds(WIDTH/2-180,HEIGHT/2-160,150,80);
 		readyTime.setVisible(false);
 		add(readyTime);
 		
-		remainTime = new JLabel("Žc‚èŽžŠÔ:"+remain);
+		remainTime = new JLabel("æ®‹ã‚Šæ™‚é–“:"+remain);
 		remainTime.setForeground(Color.WHITE);
-		remainTime.setBounds(WIDTH/2-180,HEIGHT/2-60,150,80);
+		remainTime.setBounds(WIDTH/2-180,HEIGHT/2-160,150,80);
 		remainTime.setVisible(false);
 		add(remainTime);
 		
-		answer = new JLabel();
-		answer.setBounds(WIDTH/2-130,HEIGHT-90,200,100);
-		answer.setVisible(false);
-		answer.setForeground(Color.WHITE);
-		answer.setFont(font.deriveFont(20.0f));
-		add(answer);
+		yourAns = new JLabel();
+		yourAns.setBounds(WIDTH/2-130,HEIGHT-90,200,100);
+		yourAns.setVisible(false);
+		yourAns.setForeground(Color.WHITE);
+		yourAns.setFont(font.deriveFont(20.0f));
+		add(yourAns);
 		
-		confirmButton = new JButton("NEXT",new ImageIcon(icon));
-		confirmButton.setBounds(WIDTH/2-icon.getWidth()/2,HEIGHT-150,
-				icon.getWidth(),icon.getHeight());
+		confirmButton = new JButton("NEXT",new ImageIcon(next));
+		confirmButton.setBounds(WIDTH/2-next.getWidth()/2,
+				HEIGHT-100,
+				next.getWidth(),
+				next.getHeight());
 		confirmButton.setForeground(Color.WHITE);
 		confirmButton.setHorizontalTextPosition(JButton.CENTER);
 		confirmButton.setVisible(false);
-		confirmButton.setFont(FontCreator.getFont(1).deriveFont(23.0f));
+		confirmButton.setFont(FontCreator.getFont(1).deriveFont(20.0f));
 		confirmButton.addActionListener(this);
 		confirmButton.setContentAreaFilled(false);
 		add(confirmButton);
@@ -115,7 +135,7 @@ public class AnswerPanel extends JPanel implements ActionListener{
 	
 	public void update(String[] selection,String question){
 		for(int i=0;i<4;i++){
-			Selection[i] = selection[i];
+			Selection[i]=selection[i];
 			ansButton[i].setEnabled(false);
 		}
 		ready=3.0;
@@ -133,8 +153,8 @@ public class AnswerPanel extends JPanel implements ActionListener{
 			
 		}else if(STATE==ASTATE){
 			confirmButton.setEnabled(true);
+			setSelection(Selection);
 			for(int i =0;i<4;i++){
-				ansButton[i].setText(Selection[i]);
 				ansButton[i].setEnabled(false);
 			}
 			repaint();
@@ -142,80 +162,89 @@ public class AnswerPanel extends JPanel implements ActionListener{
 			confirmButton.setVisible(true);
 		}
 	}
-	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		int qw = question.getWidth();
 		int qh = question.getHeight();
+		
 		g.drawImage(MainFrame.gameController.background,
 				0,0,
 				WIDTH,HEIGHT,
 				291,0,
 				291+WIDTH,HEIGHT,
 				null);
+		for(int i=0;i<4;i++){
+			g.drawImage(selectionImg[i],
+					WIDTH/2-350,
+					HEIGHT/2-80+80*i,
+					null);
+		}
 		g.drawImage(question,
 				WIDTH/2-qw/2,
-				HEIGHT/2-qh,null);
+				HEIGHT/2-qh-100,null);
 		g.drawImage(time,
 				WIDTH/2-qw/2+20,
-				HEIGHT/2-40,null);
+				HEIGHT/2-140,null);
 		g.setFont(font.deriveFont(20.0f));
 		g.setColor(Color.WHITE);
 		if(STATE==QSTATE){
-			g.drawString("–â‘è",
+			g.drawString("å•é¡Œ",
 					WIDTH/2-qw/2+30, 
-					HEIGHT/2-qh+50);
+					HEIGHT/2-qh-50);
 			if(Question.length()/MAX!=0){
 				for(int i=0;i<lineCount;i++){
 				g.drawChars(qSentence[i],
 						0,
 						MAX, 
 						WIDTH/2-qw/2+30, 
-						HEIGHT/2-qh+80+20*i);
+						HEIGHT/2-qh-20+20*i);
 				}
 				g.drawChars(qSentence[lineCount],0, qSentencePos, 
 						WIDTH/2-qw/2+30, 
-						HEIGHT/2-qh+80+20*lineCount);
+						HEIGHT/2-qh-20+20*lineCount);
 				
 			}else{
 				g.drawChars(qSentence[lineCount],
 						0,
 						qSentencePos, 
 						WIDTH/2-qw/2+30, 
-						HEIGHT/2-qh+80);	
+						HEIGHT/2-qh-20);	
 			}
 		}
 		else if(STATE==ASTATE){
-			g.drawString("‰ð“š", 
+			g.drawString("è§£ç­”", 
 					WIDTH/2-qw/2+30, 
-					HEIGHT/2-qh+60);
+					HEIGHT/2-qh-50);
 			if(lineCount!=0){
 				for(int i=0;i<lineCount;i++){
 				g.drawChars(qSentence[i],0, 
 						MAX, 
 						WIDTH/2-qw/2+30, 
-						HEIGHT/2-qh+80+20*i);
+						HEIGHT/2-qh-20+20*i);
 				}
 				g.drawChars(qSentence[lineCount],
 						0, 
 						qSentencePos, 
 						WIDTH/2-qw/2+30, 
-						HEIGHT/2-qh+80+20*lineCount);
+						HEIGHT/2-qh-20+20*lineCount);
 				
 			}else{
 				g.drawChars(qSentence[lineCount],
 						0,
 						qSentencePos, 
 						WIDTH/2-qw/2+30, 
-						HEIGHT/2-qh+80);	
+						HEIGHT/2-qh-20);	
 			}
 		}
 		else if(STATE==FIRST){
-			g.drawString("‘Ò‹@’†",
+			g.drawString("å¾…æ©Ÿä¸­",
 					WIDTH/2-qw/2+30 ,
-					HEIGHT/2-qh+50);
+					HEIGHT/2-qh-50);
 		}
-		g.drawImage(answerImg,WIDTH/2-answerImg.getWidth()/2,HEIGHT-70,null);
+		g.drawImage(answerImg,
+				WIDTH/2-answerImg.getWidth()/2,
+				HEIGHT-70,
+				null);
 	}
 	
 	public void actionPerformed(ActionEvent e){
@@ -236,8 +265,8 @@ public class AnswerPanel extends JPanel implements ActionListener{
 			ansButton[i].setEnabled(false);
 			}
 		MainFrame.user.Remain=remain;
-		answer.setText("‚ ‚È‚½‚Ì‰ð“š‚Í"+MainFrame.user.Ans+"”Ô");
-		answer.setVisible(true);
+		yourAns.setText("ã‚ãªãŸã®è§£ç­”ã¯"+(MainFrame.user.Ans+1)+"ç•ª");
+		yourAns.setVisible(true);
 		STATE=ASTATE;
 		}
 		else if(STATE==ASTATE){
@@ -273,12 +302,24 @@ public class AnswerPanel extends JPanel implements ActionListener{
 		questionTask = new QuestionTask();
 		questionTimer.schedule(questionTask,0L,60L);
 	}
+	private void setSelection(String[] selection){
+		for(int i=0;i<4;i++){
+			if(selection[i].length()<=25){
+				sLabel[i][0].setText(selection[i]);
+				sLabel[i][1].setText(" ");
+			}
+			else{
+				sLabel[i][0].setText(selection[i].substring(0,25));
+				sLabel[i][1].setText(selection[i].substring(25,selection[i].length()));
+			}
+		}
+	}
 
 private class RemainTask extends TimerTask{
 	public void run(){
 		remainTime.setForeground(Color.WHITE);
 		remain -= 0.01;
-		remainTime.setText("Žc‚èŽžŠÔ:"+df.format(remain));
+		remainTime.setText("æ®‹ã‚Šæ™‚é–“:"+df.format(remain));
 		if(remain<=3.0){
 			remainTime.setForeground(Color.YELLOW);
 		}
@@ -293,8 +334,8 @@ private class RemainTask extends TimerTask{
 			MainFrame.user.Ans=-1;
 			MainFrame.user.Remain=0;
 			MainFrame.user.Remain=remain;
-			answer.setText("ŽžŠÔØ‚ê‚Å‚·");
-			answer.setVisible(true);
+			yourAns.setText("æ™‚é–“åˆ‡ã‚Œ");
+			yourAns.setVisible(true);
 			STATE=ASTATE;
 		}
 	}
@@ -303,17 +344,18 @@ private class RemainTask extends TimerTask{
 private class ReadyTask extends TimerTask{
 	public void run(){
 		ready -= 0.01;
-		readyTime.setText("ŠJŽn‚Ü‚Å:"+df.format(ready));
+		readyTime.setText("é–‹å§‹ã¾ã§:"+df.format(ready));
 		if(ready<=0){
 			readyTimer.cancel();
 			readyTime.setVisible(false);
+			
+			setSelection(Selection);
 			for(int i=0;i<4;i++){
-				ansButton[i].setText(Selection[i]);
 				ansButton[i].setEnabled(true);
 			}
 			setQuestion(Question);
 			confirmButton.setVisible(false);
-			answer.setVisible(false);
+			yourAns.setVisible(false);
 			
 			remainTimer = new Timer();
 			remainTask = new RemainTask();
@@ -323,6 +365,7 @@ private class ReadyTask extends TimerTask{
 		}
 	}
 }
+
 
 private class QuestionTask extends TimerTask{
 	int length=Question.length();

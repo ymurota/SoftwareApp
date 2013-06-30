@@ -2,11 +2,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -21,7 +19,7 @@ public class HomePanel extends JPanel implements ActionListener{
 	private static final int WIDTH=MainFrame.WIDTH;
 	private static final int HEIGHT=MainFrame.HEIGHT;
 	private JButton[] button;
-	private BufferedImage icon;
+	private BufferedImage icon,back;
 	private JLabel message;
 	private Font f1,f2;
 	public HomePanel(){
@@ -29,11 +27,8 @@ public class HomePanel extends JPanel implements ActionListener{
 		setLayout(null);
 		f1 = FontCreator.getFont(1);
 		f2 = FontCreator.getFont(2);
-		try{
-			icon = ImageIO.read(getClass().getResource("Button3.png"));	
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		icon = ImageEngine.getImage("button2");
+		back = ImageEngine.getImage("hBack");
 		button = new JButton[2];
 		button[0] = new JButton("START",new ImageIcon(icon));
 		button[1] = new JButton("EXIT",new ImageIcon(icon));
@@ -47,8 +42,9 @@ public class HomePanel extends JPanel implements ActionListener{
 		}
 	}
 	public void paintComponent(Graphics g){
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
+		//g.setColor(Color.BLACK);
+		//g.fillRect(0, 0, WIDTH, HEIGHT);
+		g.drawImage(back, 0,0,null);
 		g.setFont(f2.deriveFont(30.0f));
 		g.setColor(Color.WHITE);
 		g.drawString("Your Name : ", 100, 100);

@@ -2,7 +2,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.*;
 public class FontCreator{
-	private static final Font f1=new FontCreator("ÇÍÇ¢Ç±ÉtÉHÉìÉg.ttf").createFont();
+	private static final Font f1=new FontCreator("„Çå„ÅÑ„Åì„Éï„Ç©„É≥„Éà.ttf").createFont();
 	private static final Font f2= new FontCreator("pettit_v2.ttf").createFont();
 	private String filename;
 	private FontCreator(String filename){

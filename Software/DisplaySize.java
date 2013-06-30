@@ -29,26 +29,22 @@ public class DisplaySize extends JFrame implements ActionListener,KeyListener{
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource()==displayPanel.confirmButton){
 			if(displayPanel.displaySize[0].isSelected()){
-				MainFrame.WIDTH=1024;
-				MainFrame.HEIGHT=768;
-			}
-			else if(displayPanel.displaySize[1].isSelected()){
 				MainFrame.WIDTH=1280;
 				MainFrame.HEIGHT=720;
 			}
-			else if(displayPanel.displaySize[2].isSelected()){
+			else if(displayPanel.displaySize[1].isSelected()){
 				MainFrame.WIDTH=1366;
 				MainFrame.HEIGHT=768;
 			}
-			else if(displayPanel.displaySize[3].isSelected()){
+			else if(displayPanel.displaySize[2].isSelected()){
 				MainFrame.WIDTH=1440;
 				MainFrame.HEIGHT=810;
 			}
-			else if(displayPanel.displaySize[4].isSelected()){
+			else if(displayPanel.displaySize[3].isSelected()){
 				MainFrame.WIDTH=1600;
 				MainFrame.HEIGHT=900;
 			}
-			else if(displayPanel.displaySize[5].isSelected()){
+			else if(displayPanel.displaySize[4].isSelected()){
 				MainFrame.WIDTH=1920;
 				MainFrame.HEIGHT=1080;
 			}
@@ -62,26 +58,22 @@ public class DisplaySize extends JFrame implements ActionListener,KeyListener{
 		int key = e.getKeyCode();
 		if(key==KeyEvent.VK_ENTER){
 			if(displayPanel.displaySize[0].isSelected()){
-				MainFrame.WIDTH=1024;
-				MainFrame.HEIGHT=768;
-			}
-			else if(displayPanel.displaySize[1].isSelected()){
 				MainFrame.WIDTH=1280;
 				MainFrame.HEIGHT=720;
 			}
-			else if(displayPanel.displaySize[2].isSelected()){
+			else if(displayPanel.displaySize[1].isSelected()){
 				MainFrame.WIDTH=1366;
 				MainFrame.HEIGHT=768;
 			}
-			else if(displayPanel.displaySize[3].isSelected()){
+			else if(displayPanel.displaySize[2].isSelected()){
 				MainFrame.WIDTH=1440;
 				MainFrame.HEIGHT=810;
 			}
-			else if(displayPanel.displaySize[4].isSelected()){
+			else if(displayPanel.displaySize[3].isSelected()){
 				MainFrame.WIDTH=1600;
 				MainFrame.HEIGHT=900;
 			}
-			else if(displayPanel.displaySize[5].isSelected()){
+			else if(displayPanel.displaySize[4].isSelected()){
 				MainFrame.WIDTH=1920;
 				MainFrame.HEIGHT=1080;
 			}
@@ -91,7 +83,7 @@ public class DisplaySize extends JFrame implements ActionListener,KeyListener{
 		else if(key==KeyEvent.VK_RIGHT){
 			for(int i=0;i<displayPanel.displaySize.length;i++){
 				if(displayPanel.displaySize[i].isSelected()){
-					if(i==5){
+					if(i==4){
 						displayPanel.displaySize[0].setSelected(true);
 						break;
 					}
@@ -106,7 +98,7 @@ public class DisplaySize extends JFrame implements ActionListener,KeyListener{
 			for(int i=0;i<displayPanel.displaySize.length;i++){
 				if(displayPanel.displaySize[i].isSelected()){
 					if(i==0){
-						displayPanel.displaySize[5].setSelected(true);
+						displayPanel.displaySize[4].setSelected(true);
 						break;
 					}
 					else{
@@ -124,16 +116,15 @@ public class DisplaySize extends JFrame implements ActionListener,KeyListener{
 		private JButton confirmButton;
 		public DisplayPanel(){
 			setPreferredSize(new Dimension(WIDTH,HEIGHT));
-			displaySize = new JRadioButton[6];
-			displaySize[0]=new JRadioButton("1024*768");
-			displaySize[1]=new JRadioButton("1280*720");
-			displaySize[2]= new JRadioButton("1366*768");
-			displaySize[3]= new JRadioButton("1440*810");
-			displaySize[4]= new JRadioButton("1600*900");
-			displaySize[5]= new JRadioButton("1920*1080");
-			displaySize[1].setSelected(true);
+			displaySize = new JRadioButton[5];
+			displaySize[0]= new JRadioButton("1280*720");
+			displaySize[1]= new JRadioButton("1366*768");
+			displaySize[2]= new JRadioButton("1440*810");
+			displaySize[3]= new JRadioButton("1600*900");
+			displaySize[4]= new JRadioButton("1920*1080");
+			displaySize[0].setSelected(true);
 			ButtonGroup group = new ButtonGroup();
-			for(int i=0;i<6;i++){
+			for(int i=0;i<5;i++){
 				group.add(displaySize[i]);
 				add(displaySize[i]);
 			}

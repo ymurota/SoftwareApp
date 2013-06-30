@@ -15,7 +15,7 @@ public class TitlePanel extends JPanel implements MouseListener,KeyListener{
 	public Title title;
 	public TitlePanel(){
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
-		title= new Title("ソフトウェア制作B-7班",this);
+		title= new Title("繧ｽ繝輔ヨ繧ｦ繧ｧ繧｢蛻ｶ菴廝-7迴ｭ",this);
 		addMouseListener(this);
 		addKeyListener(this);
 	}

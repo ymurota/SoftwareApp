@@ -32,7 +32,7 @@ public class ServerSystem
 					selections[i] = reader.readLine();
 				}
 
-				answer = Integer.parseInt(reader.readLine());;
+				answer = Integer.parseInt(reader.readLine())-1;//-1
 
 				question_list.add(new QuestionData(question, selections, answer));
 			}
@@ -70,6 +70,7 @@ public class ServerSystem
 	{
 		int index = (int)(Math.random() * question_list.size());
 		question_data = question_list.get(index);
+
 		String _status = null;	
 
 		for(int i = 0; i < client_number; ++i)
