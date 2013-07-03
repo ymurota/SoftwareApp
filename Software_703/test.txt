@@ -1,0 +1,1 @@
+jar cvfm Software.jar MANIFEST.MF *.java *.class *.png *.jpg *.ttf *.gif
